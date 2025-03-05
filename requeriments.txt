@@ -1,7 +1,0 @@
-streamlit
-pandas
-base64
-os
-selenium
-paramiko
-mariadb
