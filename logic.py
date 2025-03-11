@@ -1,4 +1,6 @@
 from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
 import paramiko
 import time
 import re
@@ -25,62 +27,18 @@ rancid  = paramiko.SSHClient()
 syslog  = paramiko.SSHClient()
 
 
-n2n = {
-  "BELLO": "BELLO",             "BGACA": "BGACA",        "BGACN": "CENTRO",
-  "BIOMX": "BIOMAX",            "BMACN": "BIMA",         "BQCNT": "CENTRO",
-  "BQPRD": "PRADO",             "BQMTP": "METROPARQUE",  "BZT": "BAZURTO",
-  "CALPA": "PASOANCHO",         "CALSM": "STA MONICA",   "CELTA": "CELTA",
-  "CHA": "CHAPINERO",           "CNCUC": "CENTRO",       "CNIBA": "CENTRO",
-  "CNSMA": "CENTRO",            "CNVVC": "7_DE_AGOSTO",  "CNXV3": "CXV",
-  "CTX": "CFX",                 "CTXCN": "CFX",          "CZCNT": "CENTRO",
-  "GIOTA": "GIRARDOTA",         "IBMCN": "IBM CALLE 100","IPIAL": "IPIALES",
-  "ITXZF": "ZONA FRANCA",       "KJICA": "CAJICA",       "LEVEL": "LEVEL3",
-  "LZPTE": "PUENTE ARANDA",     "MDECE": "CENTRO",       "MDEFL": "FLYWAN",
-  "MDETB": "ETB",               "MDETF": "TELEFONICA",   "MDFLY": "FLYWAN",
-  "MDIFX": "IFX",               "MDMAY": "MAYORCA",      "MDMOL": "MOLINOS",
-  "MOSQR": "MOSQUERA",          "MTCST": "MONTERIA",     "MUSEO": "MUSESO",
-  "NAOSA": "TOCANCIPA_DC",      "NAOSB": "TOCANCIPA_DC", "NAOSBT": "NAOSBT_DC",
-  "NBULA": "NEBULA",            "NEPAL": "NEPAL",        "NMBUS": "NIMBUS",
-  "NPONT": "NORTHPOINT",        "NSUBA": "SUBA",         "ODATA": "ODATA",
-  "PALVE": "PALMIRA VERSALLES", "PASTO": "PASTO",        "PL108": "PL108",
-  "PM": "PROMIGAS",             "PPNCN": "NEGRET",       "PTSOL": "PTSOL",
-  "RIONG": "RIONEGRO",          "ROD": "RODADERO",       "SANFE": "SANFE",
-  "SIBER": "SIBERIA",           "TLPOR": "TELEPORT",     "TFZOF": "ZONA FRANCA - TELEFONICA",
-  "TESUR": "TESUR",             "TRI": "TRIARA",         "TRIAR": "TRIARA",
-  "VST": "VILLA SANTOS",        "VUPCN": "VALLEDUPAR",   "WBPCN": "WBP",
-  "ZFTER": "ZONA FRANCA",       "7AGO": "7_DE_AGOSTO"
-}
-
-n2c = {
-  "BELLO": "MEDELLIN",      "BGACA": "BUCARAMANGA",   "BGACN": "BUCARAMANGA",
-  "BIOMX": "BOGOTA",        "BMACN": "BOGOTA",        "BQCNT": "BARRANQUILLA",
-  "BQPRD": "BARRANQUILLA",  "BQMTP": "BARRANQUILLA",  "BZT": "CARTAGENA",
-  "CALPA": "CALI",          "CALSM": "CALI",          "CELTA": "BOGOTA",
-  "CHA": "BOGOTA",          "CNCUC": "CUCUTA",        "CNIBA": "IBAGUE",
-  "CNSMA": "STA_MARTA",     "CNVVC": "VILLAVICENCIO", "CNXV3": "BOGOTA",
-  "CTX": "CARTAGENA",       "CTXCN": "CARTAGENA",     "CZCNT": "SINCELEJO",
-  "GIOTA": "MEDELLIN",      "IBMCN": "BOGOTA",        "IPIAL": "IPIALES",
-  "ITXZF": "BOGOTA",        "KJICA": "BOGOTA",        "LEVEL": "BOGOTA",
-  "LZPTE": "BOGOTA",        "MDECE": "MEDELLIN",      "MDEFL": "MEDELLIN",
-  "MDETB": "MEDELLIN",      "MDETF": "MEDELLIN",      "MDFLY": "MEDELLIN",
-  "MDIFX": "MEDELLIN",      "MDMAY": "MEDELLIN",      "MDMOL": "MEDELLIN",
-  "MOSQR": "BOGOTA",        "MTCST": "MONTERIA",      "MUSEO": "BOGOTA",
-  "NAOSA": "BOGOTA",        "NAOSB": "BOGOTA",        "NAOSBT": "BOGOTA",
-  "NBULA": "BOGOTA",        "NEPAL": "BOGOTA",        "NMBUS": "BOGOTA",
-  "NPONT": "BOGOTA",        "NSUBA": "BOGOTA",        "ODATA": "BOGOTA",
-  "PALVE": "PALMIRA",       "PASTO": "PASTO",         "PL108": "BOGOTA",
-  "PM": "CARTAGENA",        "PPNCN": "POPAYAN",       "PTSOL": "BOGOTA",
-  "RIONG": "MEDELLIN",      "ROD": "SANTA MARTA",     "SANFE": "MEDELLIN",
-  "SIBER": "BOGOTA",        "TLPOR": "BOGOTA",        "TFZOF": "BOGOTA",
-  "TESUR": "BOGOTA",        "TRI": "BOGOTA",          "TRIAR": "BOGOTA",
-  "VST": "BARRANQUILLA",    "VUPCN": "VALLEDUPAR",    "WBPCN": "BOGOTA",
-  "ZFTER": "BOGOTA"
-}
 
 
 
-#def otsTicket():
-    
+def otsTicket():
+    driver = webdriver.Chrome()
+    driver.get('https://identity.lla.com/app/servicedesk/exk1s9tlsit5TGKwm1d8/sso/saml?SAMLRequest=fZJLT8MwEIT%2FSuR76yaEtLXaSoUKqHhVNHDgghxnAxaOHbwb2v570oSnBFzX88141p6gLE0l5jU92Rt4qQEp2JbGomgPpqz2VjiJGoWVJaAgJdbzywsR9Qei8o6ccoZ9Q%2F4nJCJ40s6yYLmYsocsivJEDhXEB6DyqEjGo2KUJaMoTsaZzAo1zIpsmIzjkAV34LEhp6wxanDEGpYWSVpqRoPosDc46IVhGg1EnIg4vmfBommjraSWeiKqUHCuc7Ckadc3RvaVK7msKt7c6lUryAGfOWyfQxyTQU2H6en5pgzzEUd0fF%2BPBfOPCsfOYl2CX3fs7c3FV4gj%2FPTvsNX7ro60zbV9%2FH9NWSdCcZamq97qep2y2WTvI9rafvZLzoR%2FF0y6d71qrJeLlTNa7YIT50tJfyeH%2FbCd6LxXtFJRW6xA6UJD3hQ3xm2OPUiCKSNfA%2BOzLvTn%2F5m9AQ%3D%3D&RelayState=https%3A%2F%2Fots.lla.com%2Fauth%2Flogin%2Ftype%2Fsaml%3Fnext%3D')
+    time.sleep(2)
+    username = driver.find_element(By.ID, "input28")
+    username.send_keys("1871713@cwc.com")
+    lgButton=driver.find_element(By.XPATH, "//input[@value='Next']")
+    lgButton.click()
+    #password = driver.find_element(By.ID, "login_password")
 
 
 def encontrarTodos(text, pattern):
@@ -235,41 +193,47 @@ def findParameteres(shell,ios):
         auxModel = ingresarComando("show version | include processor",shell)
         modelo = encontrarTxt(auxModel,r'cisco (\S+)')
         
-    #else:
-        #auxHost = ingresarComando("show configuration | match host-name",shell)
-        #hostname=encontrarTxt(auxHost,r'host-name (\S+)')
-        #hostname = hostname.rstrip(';')
-        #auxModel = ingresarComando("show version | match model",shell)
-        #modelo = encontrarTxt(auxModel,r'Model: (\S+)')
-        auxNodo = encontrarNodo()
-        nodo = n2n[auxNodo]
-        ciudad = n2c[auxNodo]
-    #auxCiudad = "BOG"
-    #try:
-    #    for cod in ciudades:
-    #        if encontrarTxt(hostname,cod) != "":
-    #            auxCiudad = cod
-    #            break
-    #except:
-    #        auxCiudad = "BOG"
-    #ciudad = ciudades[auxCiudad] 
+    else:
+        auxHost = ingresarComando("show configuration | match host-name",shell)
+        hostname=encontrarTxt(auxHost,r'host-name (\S+)')
+        hostname = hostname.rstrip(';')
+        auxModel = ingresarComando("show version | match model",shell)
+        modelo = encontrarTxt(auxModel,r'Model: (\S+)')
+    auxNodo = encontrarNodo()
+    ciudad, nodo = ncSelect(auxNodo)
         
 def encontrarNodo():
-
     partes = re.split(r'[-_]', hostname)
     partes = [parte.strip() for parte in partes if parte.strip()]
-    
     print(partes)
-
     if len(partes) >= 5 and len(partes[0]) == 3 and len(partes[1]) == 3:
         return partes[2]
     elif len(partes) > 1 and len(partes[0]) == 3:
         return partes[1]
     else:
-
         return partes[0]
 
-    
+def ncSelect(auxNodo):
+    try:
+        conn = mariadb.connect(
+            user="root",
+            password="Trul-f87",
+            host="172.18.93.210",
+            port=3306,
+            database="ipcol"
+        )
+        cur = conn.cursor()
+        query = "SELECT Ciudad, NodoReal FROM ipcol.ubicacion WHERE Nodo IN ('"+auxNodo+"');"
+        cur.execute(query)
+        row = cur.fetchone() 
+        cur.close()
+        conn.close()
+        if row is None:
+            return None
+        else:
+            return row
+    except mariadb.Error as e:
+        return f"Error connecting to DB: {e}"
         
 def commandRancid(ios):
     if ios == "XE":
@@ -329,7 +293,6 @@ def printCommands(commandList):
     return output
     
 def ipSelect(host):
-   
     try:
         conn = mariadb.connect(
             user="root",
@@ -343,13 +306,13 @@ def ipSelect(host):
         cur.execute(query)
         row = cur.fetchone() 
         columns = [desc[0] for desc in cur.description]
+        cur.close()
+        conn.close()
         if row is None:
             return None
         else:
             device_info = dict(zip(columns, row))
             return device_info
-        cur.close()
-        conn.close()
     except mariadb.Error as e:
         return f"Error connecting to DB: {e}"
         
@@ -386,12 +349,9 @@ def get_processed_values():
         "Modelo": modelo
         }
 
-
-
 def process_logic():
 
     print("Hola")
-
 
 def ejecutar_configuracion(os_type, host, options):
     global hostnameClient, vendor, ios
@@ -413,6 +373,7 @@ def ejecutar_configuracion(os_type, host, options):
     if "ISE" in options:
         commandList = commandISE(ios)
         cli_output += printCommands(commandList)
+        otsTicket()
         #    #configureISE(shellClient,commandList)
     if "Usuario Rancid" in options:
         commandList = commandRancid(ios)
@@ -423,11 +384,3 @@ def ejecutar_configuracion(os_type, host, options):
         #    cli_output += printCommands(commandList)
         #    #configureSyslog(shellClient,commandList)
     return general_output, cli_output
-
-
-
-if __name__ == '__main__':
-    options = webdriver.ChromeOptions()
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])
-    driver = webdriver.Chrome(executable_path='C:\ProgramData\Microsoft\Windows\Start Menu\Programs', options=options)
-    webDriver.get('https://ots.lla.com/')
